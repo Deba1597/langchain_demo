@@ -8,6 +8,9 @@ import pandas as pd
 from dotenv import load_dotenv
 load_dotenv()
 from src.response import *
+from src.logger import logging
+from src.utils import read_file, get_table_data
+
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 # print(GOOGLE_API_KEY)
 
@@ -23,7 +26,7 @@ Make sure to format your response like  RESPONSE_JSON below  and use it as a gui
 Ensure to make {number} MCQs
 ### RESPONSE_JSON
 {response_json}
-
+You only have to relpy the string (i.e : not start with  RESPONSE_JSON =)
 """
 quiz_generation_prompt = PromptTemplate(
     input_variables=["text", "number", "subject", "tone", "response_json"],
@@ -50,22 +53,22 @@ generate_evaluate_chain=SequentialChain(chains=[quiz_chain, review_chain],
                                         input_variables=["text", "number", "subject", "tone", "response_json"],
                                         output_variables=["quiz", "review"], verbose=True,)
 
-NUMBER=15
-SUBJECT="data science"
-TONE="simple"
+# NUMBER=15
+# SUBJECT="data science"
+# TONE="simple"
 
-with open('document.txt','r') as f:
-    TEXT = f.read()
-response=generate_evaluate_chain.invoke(
-        {
-            "text": TEXT,
-            "number": NUMBER,
-            "subject":SUBJECT,
-            "tone": TONE,
-            "response_json": json.dumps(RESPONSE_JSON)
-        }
-        )
+# with open('document.txt','r') as f:
+#     TEXT = f.read()
+# response=generate_evaluate_chain.invoke(
+#         {
+#             "text": TEXT,
+#             "number": NUMBER,
+#             "subject":SUBJECT,
+#             "tone": TONE,
+#             "response_json": json.dumps(RESPONSE_JSON)
+#         }
+#         )
 
-print(response.get('quiz'))
-print('_#-#'*50)
-print(response.get('review'))
+# print(response.get('quiz'))
+# print('_#-#'*50)
+# print(response.get('review'))
